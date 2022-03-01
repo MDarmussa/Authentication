@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const { User } = require('../models');
 const Sequelize = require('sequelize');
-const {authApp} = require('../models');
+// const {authApp} = require('../models'); //
 const saltRounds = (10);
 
 router.get('/', async function (req, res, next) {
@@ -26,13 +26,14 @@ res.json(user);
 
 router.post('/register', async (req, res, next) => {
      let {username, password, email} = req.body;
-     passWord = bcrypt.hashSync(password, saltRounds)
-     const newUser = await authApp.create({
-       username,
-       password,
-       email
+     const hashPassword = bcrypt.hashSync(password, saltRounds)
+     const saltRounds = bcrypt.genSaltSync(3)
+     const newUser = await User.create({
+       username: username,
+       password: hashPassword,
+       email: email
      });
-     res.send("registered User")
+     res.send(newUser)
    });
 
 
