@@ -1,4 +1,7 @@
 
+Note: I need to create a new user table, and make the password as a string not integer.
+
+
 Auth Setup:
 1- Create a new project directory (ex: authSecurity)
    cd authApp (then run the following commands)
@@ -35,3 +38,71 @@ Link: https://digitalcrafts.instructure.com/courses/172/pages/reading-sequelize-
         
 9- Running the Seed File
     run: npx sequelize-cli db:seed:all
+
+
+
+    https://digitalcrafts.instructure.com/courses/172/pages/reading-sequelize-orm?module_item_id=12056
+
+    
+
+
+
+
+  ---------  March 1 -----
+
+install:
+npm install dotenv --save
+npm install jsonwebtoken
+
+
+  How to hide our token keys from users:
+  create .env file
+   - SALT_ROUNDS=10
+
+   on app.js:
+    add:  
+- const dotenv = require('dotenv');
+- dotenv.config();
+- console.log("Salat Rounds Are: ", process.env.SALT_ROUNDS)
+
+
+on user app:
+  add:
+   - const saltRounds = process.env.SALT_ROUNDS;
+
+Note, we can add more than key, just simply add in .env 
+ex: SALT_ROUNDS=5  ..etc
+
+
+
+https://jwt.io/
+https://www.npmjs.com/package/jsonwebtoken
+https://www.npmjs.com/package/dotenv
+
+
+to run the app:
+ - npm start
+
+
+ --Web Tokens---
+1) install the jwt library
+     npm install jsonwebtoken
+2) in the app.js:
+    const jwt = require(‘jsonwebtoken’);
+    const token = jwt.sign({
+    data: ‘Free the ducks’
+    }, ‘put your custom key here’, { expiresIn: ‘1h’ });
+    console.log(“SECRET_KEY secretly held in .env: “, token);
+This will generate a token with a 1h parameter from the .env file SECRET_KEY=topSecretKey
+These tokens are verification passes to routes/rooms. The database is the gatekeeper for these routes/rooms that will check the token. They  typically have perishable timeout parameters.
+3) Tokens are verified once access-restricted routes are called
+    jwt.verify(
+        token,
+        secretKey,
+    function (err, decoded) {
+        console.log(‘Decoded’, decoded)
+  }
+)
+
+
+
